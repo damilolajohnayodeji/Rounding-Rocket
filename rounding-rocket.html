@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rounding Rocket! 🚀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Chewy&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #4A90E2;
+            --primary-green: #7ED321;
+            --primary-purple: #BD10E0;
+            --bright-orange: #FF6B35;
+            --bright-yellow: #FFD93D;
+            --dark-space: #1a1a2e;
+            --light-bg: #f0f4ff;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated stars background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Chewy', cursive;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            color: var(--bright-yellow);
+            text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2),
+                         0 0 20px rgba(255, 217, 61, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: white;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .rocket-emoji {
+            display: inline-block;
+            font-size: clamp(3rem, 10vw, 5rem);
+            animation: rocketFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        /* Main Card */
+        .main-card {
+            background: white;
+            border-radius: 30px;
+            padding: clamp(20px, 5vw, 40px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Input Section */
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-label {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            color: var(--dark-space);
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+            text-align: center;
+        }
+
+        .number-input {
+            width: 100%;
+            padding: 20px;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            border: 4px solid var(--primary-blue);
+            border-radius: 20px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+            background: linear-gradient(to bottom, #ffffff, #f8f9ff);
+        }
+
+        .number-input:focus {
+            border-color: var(--bright-orange);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
+            transform: scale(1.02);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 1rem;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        /* Button Section */
+        .button-section {
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .round-button {
+            padding: 25px 30px;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .round-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .round-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .round-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .round-button:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .round-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-tens {
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+        }
+
+        .btn-hundreds {
+            background: linear-gradient(135deg, #7ED321, #5FA016);
+        }
+
+        .btn-thousands {
+            background: linear-gradient(135deg, #BD10E0, #9B0DB8);
+        }
+
+        /* Result Section */
+        .result-section {
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9ff, #e8f0ff);
+            border-radius: 20px;
+            border: 4px solid var(--primary-blue);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+            display: none;
+        }
+
+        .result-section.show {
+            opacity: 1;
+            transform: scale(1);
+            display: block;
+            animation: resultPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes resultPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(-10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .result-input {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            color: var(--dark-space);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .result-answer {
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: var(--bright-orange);
+            font-weight: 700;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-answer .number {
+            color: var(--primary-purple);
+            animation: numberBounce 0.8s ease;
+        }
+
+        @keyframes numberBounce {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(0.95); }
+            75% { transform: scale(1.1); }
+        }
+
+        .encouragement {
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
+            color: var(--primary-green);
+            font-weight: 700;
+            margin-top: 15px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Visual Explanation */
+        .visual-explanation {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 20px;
+            border: 3px dashed var(--primary-green);
+        }
+
+        .explanation-title {
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
+            color: var(--dark-space);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .number-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .number-point {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 700;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .number-point.start {
+            color: #888;
+        }
+
+        .number-point.input {
+            color: var(--bright-orange);
+            transform: scale(1.2);
+            background: linear-gradient(135deg, #fff5e6, #ffffff);
+            border: 3px solid var(--bright-orange);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1.2); }
+            50% { transform: scale(1.3); }
+        }
+
+        .number-point.end {
+            color: #888;
+        }
+
+        .number-point.result {
+            color: var(--primary-purple);
+            background: linear-gradient(135deg, #f0e6ff, #ffffff);
+            border: 3px solid var(--primary-purple);
+        }
+
+        .line-connector {
+            flex-grow: 1;
+            height: 4px;
+            background: linear-gradient(to right, #ddd, #bbb);
+            position: relative;
+            margin: 0 10px;
+        }
+
+        .arrow-indicator {
+            text-align: center;
+            margin: 20px 0;
+            font-size: clamp(2rem, 6vw, 3rem);
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .explanation-text {
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            color: var(--dark-space);
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 600;
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        /* Practice Again Button */
+        .practice-again {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .practice-button {
+            padding: 20px 40px;
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--bright-orange), #e74c3c);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .practice-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.5);
+        }
+
+        .practice-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--bright-yellow);
+            position: absolute;
+            animation: confettiFall 3s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .button-section {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated stars background -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="rocket-emoji">🚀</div>
+            <h1>Rounding Rocket!</h1>
+            <p class="subtitle">Let's round numbers the smart way! ✨</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Input Section -->
+            <div class="input-section">
+                <label class="input-label">Type any number here...</label>
+                <input 
+                    type="text" 
+                    class="number-input" 
+                    id="numberInput" 
+                    placeholder="347"
+                    inputmode="numeric"
+                >
+                <div class="error-message" id="errorMessage">
+                    Oops! Please enter a whole number 🤔
+                </div>
+            </div>
+
+            <!-- Button Section -->
+            <div class="button-section">
+                <button class="round-button btn-tens" onclick="roundNumber('tens')">
+                    <span>🔵 Round to Tens</span>
+                </button>
+                <button class="round-button btn-hundreds" onclick="roundNumber('hundreds')">
+                    <span>🟢 Round to Hundreds</span>
+                </button>
+                <button class="round-button btn-thousands" onclick="roundNumber('thousands')">
+                    <span>🟣 Round to Thousands</span>
+                </button>
+            </div>
+
+            <!-- Result Section -->
+            <div class="result-section" id="resultSection">
+                <div class="result-input">
+                    You entered: <strong id="inputDisplay"></strong>
+                </div>
+                <div class="result-answer">
+                    Rounded to nearest <span id="roundType"></span>: 
+                    <span class="number" id="roundedNumber"></span>
+                </div>
+                <div class="encouragement" id="encouragement"></div>
+
+                <!-- Visual Explanation -->
+                <div class="visual-explanation">
+                    <div class="explanation-title">Let's see why! 👀</div>
+                    
+                    <div class="number-line">
+                        <div class="number-point start" id="lowerBound"></div>
+                        <div class="line-connector"></div>
+                        <div class="number-point input" id="inputNumber"></div>
+                        <div class="line-connector"></div>
+                        <div class="number-point end" id="upperBound"></div>
+                    </div>
+
+                    <div class="arrow-indicator" id="arrowIndicator"></div>
+
+                    <div class="explanation-text" id="explanationText"></div>
+                </div>
+
+                <!-- Practice Again Button -->
+                <div class="practice-again">
+                    <button class="practice-button" onclick="resetGame()">
+                        🎯 Try Another Number!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 50;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#FFD93D', '#FF6B35', '#4A90E2', '#7ED321', '#BD10E0'];
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Rounding logic - mathematically accurate
+        function roundNumber(type) {
+            const input = document.getElementById('numberInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Validate input
+            if (input === '' || isNaN(input) || !Number.isInteger(Number(input)) || Number(input) < 0) {
+                errorMessage.classList.add('show');
+                setTimeout(() => errorMessage.classList.remove('show'), 3000);
+                return;
+            }
+            
+            errorMessage.classList.remove('show');
+            
+            const num = parseInt(input);
+            let rounded;
+            let lowerBound, upperBound;
+            let place;
+            
+            // Perform rounding based on type
+            if (type === 'tens') {
+                rounded = Math.round(num / 10) * 10;
+                lowerBound = Math.floor(num / 10) * 10;
+                upperBound = Math.ceil(num / 10) * 10;
+                place = 'ten';
+            } else if (type === 'hundreds') {
+                rounded = Math.round(num / 100) * 100;
+                lowerBound = Math.floor(num / 100) * 100;
+                upperBound = Math.ceil(num / 100) * 100;
+                place = 'hundred';
+            } else if (type === 'thousands') {
+                rounded = Math.round(num / 1000) * 1000;
+                lowerBound = Math.floor(num / 1000) * 1000;
+                upperBound = Math.ceil(num / 1000) * 1000;
+                place = 'thousand';
+            }
+            
+            // Display results
+            displayResults(num, rounded, lowerBound, upperBound, place, type);
+            
+            // Trigger confetti
+            createConfetti();
+        }
+
+        function displayResults(original, rounded, lower, upper, place, type) {
+            const resultSection = document.getElementById('resultSection');
+            const inputDisplay = document.getElementById('inputDisplay');
+            const roundType = document.getElementById('roundType');
+            const roundedNumber = document.getElementById('roundedNumber');
+            const encouragement = document.getElementById('encouragement');
+            const lowerBoundEl = document.getElementById('lowerBound');
+            const upperBoundEl = document.getElementById('upperBound');
+            const inputNumberEl = document.getElementById('inputNumber');
+            const arrowIndicator = document.getElementById('arrowIndicator');
+            const explanationText = document.getElementById('explanationText');
+            
+            // Set basic info
+            inputDisplay.textContent = original.toLocaleString();
+            roundType.textContent = place;
+            roundedNumber.textContent = rounded.toLocaleString();
+            
+            // Random encouragement message
+            const encouragements = [
+                "Brilliant work! 🌟",
+                "You're a maths superstar! ⭐",
+                "Fantastic rounding! 🎉",
+                "Great thinking! 🧠",
+                "You've got it! 💪",
+                "Amazing job! 🚀",
+                "Keep going, champion! 🏆"
+            ];
+            encouragement.textContent = encouragements[Math.floor(Math.random() * encouragements.length)];
+            
+            // Set number line
+            lowerBoundEl.textContent = lower.toLocaleString();
+            upperBoundEl.textContent = upper.toLocaleString();
+            inputNumberEl.textContent = original.toLocaleString();
+            
+            // Determine direction and explanation
+            const midpoint = (lower + upper) / 2;
+            let direction, explanation;
+            
+            if (original === rounded) {
+                direction = "✨";
+                explanation = `${original.toLocaleString()} is already a nice round ${place}, so it stays the same!`;
+            } else if (rounded > original) {
+                direction = "⬆️";
+                const distance = original - lower;
+                explanation = `Because ${original.toLocaleString()} is ${distance} away from ${lower.toLocaleString()} and only ${upper - original} away from ${upper.toLocaleString()}, we round UP to ${rounded.toLocaleString()}! 🚀`;
+            } else {
+                direction = "⬇️";
+                const distance = upper - original;
+                explanation = `Because ${original.toLocaleString()} is ${distance} away from ${upper.toLocaleString()} and only ${original - lower} away from ${lower.toLocaleString()}, we round DOWN to ${rounded.toLocaleString()}! 🎯`;
+            }
+            
+            // Special case: exactly in the middle (round up)
+            if (original === midpoint) {
+                direction = "⬆️";
+                explanation = `${original.toLocaleString()} is exactly in the middle! When this happens, we always round UP to ${rounded.toLocaleString()}! That's the rounding rule! 📐`;
+            }
+            
+            arrowIndicator.textContent = direction;
+            explanationText.textContent = explanation;
+            
+            // Show result section with animation
+            resultSection.classList.add('show');
+            
+            // Scroll to results
+            setTimeout(() => {
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function resetGame() {
+            const resultSection = document.getElementById('resultSection');
+            const numberInput = document.getElementById('numberInput');
+            
+            resultSection.classList.remove('show');
+            numberInput.value = '';
+            numberInput.focus();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        createStars();
+        
+        // Allow Enter key to trigger rounding
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                // Default to tens if they just press enter
+                roundNumber('tens');
+            }
+        });
+    </script>
+</body>
+</html>
